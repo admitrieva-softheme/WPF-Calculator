@@ -98,5 +98,10 @@ namespace Calculator
             return (a / b);
         }
 
+
+        public Operators getOperation()
+        {
+            return op;
+        }
     }
 }

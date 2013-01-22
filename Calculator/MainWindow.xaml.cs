@@ -111,9 +111,36 @@ namespace Calculator
             }
 
             textBox1.Text = answer;
-
+            updateList(answer);
             numberOneBuffer = "";
             numberTwoBuffer = "";
+        }
+
+        private void updateList(string answer)
+        {
+            string s = numberTwoBuffer;
+
+            Calc.Operators op = c.getOperation();
+            switch (op)
+            {
+                case Calc.Operators.Addition:
+                    s += " + ";
+                    break;
+                case Calc.Operators.Subtraction:
+                    s += " - ";
+                    break;
+                case Calc.Operators.Multiplication:
+                    s += " x ";
+                    break;
+                case Calc.Operators.Division:
+                    s += " % ";
+                    break;
+            }
+
+            s += numberOneBuffer;
+            s += " = ";
+            s += answer;
+            listBox1.Items.Add(s);
         }
 
         private void sign_Click(object sender, RoutedEventArgs e)
