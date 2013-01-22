@@ -19,238 +19,184 @@ namespace Calculator
     /// </summary>
     public partial class MainWindow : Window
     {
+        static string defaultString = "0.0";
+        string numberOneBuffer;
+        string numberTwoBuffer;
+        Calc c;
         public MainWindow()
         {
             InitializeComponent();
-            textBox1.Text = def;
-            numberOne = 0.0;
-            numberTwo = 0.0;
-            answer = 0.0;
-            first = true;
-            complete = false;
-            buffer = "";
-            op = 0;
+            c = new Calc();
+            textBox1.Text = defaultString;
+
+            numberOneBuffer = "";
+            numberTwoBuffer = "";
         }
-
-        string def = "0.0";
-
-        string buffer;
-
-        double numberOne;
-        double numberTwo;
-        double answer;
-        bool first;
-        bool complete;
-        int op;
-
 
         private void one_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "1";
-            textBox1.Text = buffer;
+            numberOneBuffer += "1";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void two_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "2";
-            textBox1.Text = buffer;
+            numberOneBuffer += "2";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void three_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "3";
-            textBox1.Text = buffer;
+            numberOneBuffer += "3";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void four_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "4";
-            textBox1.Text = buffer;
+            numberOneBuffer += "4";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void five_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "5";
-            textBox1.Text = buffer;
+            numberOneBuffer += "5";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void six_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "6";
-            textBox1.Text = buffer;
+            numberOneBuffer += "6";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void seven_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "7";
-            textBox1.Text = buffer;
+            numberOneBuffer += "7";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void eight_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "8";
-            textBox1.Text = buffer;
+            numberOneBuffer += "8";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void nine_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "9";
-            textBox1.Text = buffer;
+            numberOneBuffer += "9";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void zero_Click(object sender, RoutedEventArgs e)
         {
-            buffer += "0";
-            textBox1.Text = buffer;
+            numberOneBuffer += "0";
+            textBox1.Text = numberOneBuffer;
         }
 
         private void decipoint_Click(object sender, RoutedEventArgs e)
         {
-            buffer += ".";
+            numberOneBuffer += ".";
         }
 
         private void enter_Click(object sender, RoutedEventArgs e)
         {
-            if (op != 0)
+            string answer = "";
+            if (c.isFirstOperation() || ((numberOneBuffer.Length > 0) && (numberTwoBuffer.Length > 0)))
             {
-                string str = "";
-                buffer = checkDecimal(buffer);
-                numberTwo = Convert.ToDouble(buffer);
-                first = false;
-                switch (op)
-                {
-                    case 1:
-                        answer = numberOne + numberTwo;
-                        str = Convert.ToString(numberOne) + "+" + Convert.ToString(numberTwo) + "=" + Convert.ToString(answer);
-                        break;
-                    case 2:
-                        answer = numberOne - numberTwo;
-                        str = Convert.ToString(numberOne) + "-" + Convert.ToString(numberTwo) + "=" + Convert.ToString(answer);
-                        break;
-                    case 3:
-                        answer = numberOne * numberTwo;
-                        str = Convert.ToString(numberOne) + "x" + Convert.ToString(numberTwo) + "=" + Convert.ToString(answer);
-                        break;
-                    case 4:
-                        answer = numberOne / numberTwo;
-                        str = Convert.ToString(numberOne) + "%" + Convert.ToString(numberTwo) + "=" + Convert.ToString(answer);
-                        break;
-                }
-                buffer = string.Empty;
-                textBox1.Text = Convert.ToString(answer);
-                op = 0;
-                listBox1.Items.Add(str);
+                answer = c.operate(Convert.ToDouble(numberTwoBuffer), Convert.ToDouble(numberOneBuffer));
             }
+            else
+            {
+                answer = c.operate(Convert.ToDouble(numberTwoBuffer));
+            }
+
+            textBox1.Text = answer;
+
+            numberOneBuffer = "";
+            numberTwoBuffer = "";
         }
 
         private void sign_Click(object sender, RoutedEventArgs e)
         {
-            if (buffer.Length > 0)
+            if (numberOneBuffer.Length > 0)
             {
-                if (buffer[0] == '-')
+                if (numberOneBuffer[0] == '-')
                 {
-                    buffer = buffer.Substring(1, buffer.Length - 1);
+                    numberOneBuffer = numberOneBuffer.Substring(1, numberOneBuffer.Length - 1);
                 }
                 else
                 {
-                    buffer = "-" + buffer;
+                    numberOneBuffer = "-" + numberOneBuffer;
                 }
             }
             else
             {
-                buffer = "-" + buffer;
+                numberOneBuffer = "-" + numberOneBuffer;
             }
-            textBox1.Text = Convert.ToString(buffer);
+            textBox1.Text = Convert.ToString(numberOneBuffer);
         }
 
         private void clearentry_Click(object sender, RoutedEventArgs e)
         {
-            buffer = "";
-            textBox1.Text = def;
+            numberOneBuffer = "";
+            textBox1.Text = defaultString;
         }
 
         private void clear_Click(object sender, RoutedEventArgs e)
         {
-            buffer = "";
-            op = 0;
-            first = true;
-            complete = false;
-            textBox1.Text = def;
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
+            numberOneBuffer = "";
+            c.reset();
+            textBox1.Text = defaultString;
         }
 
         private void add_Click(object sender, RoutedEventArgs e)
         {
-            if (first == false)
+            if ((numberOneBuffer.Length > 0) && (numberTwoBuffer.Length > 0))
             {
-                numberOne = answer;
-                op = 1;
+                string answer = c.operate(Convert.ToDouble(numberTwoBuffer), Convert.ToDouble(numberOneBuffer));
+                textBox1.Text = answer;
+                c.setOperation(Calc.Operators.Addition);
             }
             else
             {
-                op = 1;
-                buffer = checkDecimal(buffer);
-                numberOne = Convert.ToDouble(buffer);
-                buffer = string.Empty;
+                c.setOperation(Calc.Operators.Addition);
+                numberTwoBuffer = numberOneBuffer;
+                numberOneBuffer = string.Empty;
             }
+
         }
 
         private void minus_Click(object sender, RoutedEventArgs e)
         {
-            if (first == false)
+            if ((numberOneBuffer.Length > 0) && (numberTwoBuffer.Length > 0))
             {
-                numberOne = answer;
-                op = 2;
+                textBox1.Text = c.operate(Convert.ToDouble(numberTwoBuffer), Convert.ToDouble(numberOneBuffer));
             }
-            else
-            {
-                op = 2;
-                buffer = checkDecimal(buffer);
-                numberOne = Convert.ToDouble(buffer);
-                buffer = string.Empty;
-            }
+            c.setOperation(Calc.Operators.Subtraction);
+            numberTwoBuffer = numberOneBuffer;
+            numberOneBuffer = string.Empty;
         }
 
         private void multiple_Click(object sender, RoutedEventArgs e)
         {
-            if (first == false)
+            if ((numberOneBuffer.Length > 0) && (numberTwoBuffer.Length > 0))
             {
-                numberOne = answer;
-                op = 3;
+                textBox1.Text = c.operate(Convert.ToDouble(numberTwoBuffer), Convert.ToDouble(numberOneBuffer));
             }
-            else
-            {
-                op = 3;
-                buffer = checkDecimal(buffer);
-                numberOne = Convert.ToDouble(buffer);
-                buffer = string.Empty;
-            }
-
+            c.setOperation(Calc.Operators.Multiplication);
+            numberTwoBuffer = numberOneBuffer;
+            numberOneBuffer = string.Empty;
         }
 
         private void divide_Click(object sender, RoutedEventArgs e)
         {
-            if (first == false)
+            if ((numberOneBuffer.Length > 0) && (numberTwoBuffer.Length > 0))
             {
-                numberOne = answer;
-                op = 4;
+                textBox1.Text = c.operate(Convert.ToDouble(numberTwoBuffer), Convert.ToDouble(numberOneBuffer));
             }
-            else
-            {
-                op = 4;
-                buffer = checkDecimal(buffer);
-                numberOne = Convert.ToDouble(buffer);
-                buffer = string.Empty;
-            }
+            c.setOperation(Calc.Operators.Division);
+            numberTwoBuffer = numberOneBuffer;
+            numberOneBuffer = string.Empty;
         }
 
         private string checkDecimal(string s)
